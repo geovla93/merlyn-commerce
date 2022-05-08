@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+	.nav-link {
+		@apply px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug hover:opacity-75;
+	}
+
+	.input {
+		@apply border border-gray-300 outline-none rounded-sm p-4 hover:border-gray-500 focus:border-black;
+	}
+
+	.form {
+		@apply flex flex-col w-full space-y-6;
+	}
+}
