@@ -2,7 +2,24 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+1. Install dependencies:
+
+```bash
+npm run install
+# or
+yarn
+```
+
+2. Create a .env.local file at the root of the project and set the following env variables:
+
+i. STRIPE_SECRET_KEY
+ii. NEXT_PUBLIC_STRIPE_PUBLIC_KEY
+iii. GOOGLE_CLIENT_SECRET
+iv. GOOGLE_CLIENT_ID
+v. MONGODB_DB
+vi. MONGODB_URI
+
+3 Run the development server:
 
 ```bash
 npm run dev
