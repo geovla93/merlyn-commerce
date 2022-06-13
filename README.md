@@ -11,7 +11,6 @@ yarn
 ```
 
 2. Create a .env.local file at the root of the project and set the following env variables:
-
   i.   STRIPE_SECRET_KEY
   ii.  NEXT_PUBLIC_STRIPE_PUBLIC_KEY
   iii. GOOGLE_CLIENT_SECRET
