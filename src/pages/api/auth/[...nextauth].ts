@@ -1,38 +1,37 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import NextAuth, { NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
 
-import { connectToDatabase } from "../../../lib/db/mongodb";
-import { verifyPassword } from "../../../lib/auth/auth";
-import { NextApiRequest, NextApiResponse } from "next";
+import { verifyPassword } from '@/lib/argon2';
+import prisma from '@/lib/prisma';
 
 const options: NextAuthOptions = {
-  session: { strategy: "jwt" },
+  session: { strategy: 'jwt' },
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
-      credentials: { email: { type: "email" }, password: { type: "password" } },
+      credentials: { email: { type: 'email' }, password: { type: 'password' } },
       async authorize(credentials) {
-        try {
-          const { db } = await connectToDatabase();
-          const user = await db.collection("users").findOne({
-            email: credentials.email,
-          });
-
-          if (!user) throw new Error("No user found");
-
-          const isPasswordValid = await verifyPassword(
-            credentials.password,
-            user.password
-          );
-
-          if (!isPasswordValid) throw new Error("Password is not valid");
-
-          return {
-            email: user.email,
-          };
-        } catch (error) {
-          throw new Error(error);
+        const { email, password } = credentials;
+        if (password.length < 8) {
+          throw new Error('Password must be at least 8 characters');
         }
+
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) throw new Error('Invalid credentials');
+
+        const isPasswordValid = await verifyPassword(
+          credentials.password,
+          user.password,
+        );
+        if (!isPasswordValid) throw new Error('Invalid credentials');
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        };
       },
     }),
     GoogleProvider({
@@ -41,9 +40,8 @@ const options: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: "/auth/signin",
+    signIn: '/auth/signin',
   },
-  debug: true,
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) =>

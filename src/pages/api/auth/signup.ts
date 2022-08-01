@@ -1,11 +1,12 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import isEmail from "validator/lib/isEmail";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { Prisma } from '@prisma/client';
+import isEmail from 'validator/lib/isEmail';
 
-import { hashPassword } from "../../../lib/auth/auth";
-import { connectToDatabase } from "../../../lib/db/mongodb";
+import { hashPassword } from '@/lib/argon2';
+import prisma from '@/lib/prisma';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     const {
       firstName,
       lastName,
@@ -19,34 +20,36 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     } = req.body;
 
     if (!isEmail(email) || password.trim().length < 7) {
-      return res.status(422).json({ message: "Invalid input!" });
-    }
-
-    const { db } = await connectToDatabase();
-
-    const existingUser = await db.collection("users").findOne({ email: email });
-
-    if (existingUser) {
-      res.status(422).json({ message: "User is already registered." });
-      return;
+      return res.status(422).json({ message: 'Invalid input!' });
     }
 
     const hashedPassword = await hashPassword(password);
-
-    const newUser = {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
+    const newUser: Prisma.UserCreateInput = {
+      name: `${firstName} ${lastName}`,
+      email,
       password: hashedPassword,
     };
-    const result = await db.collection("users").insertOne(newUser);
 
-    res
-      .status(201)
-      .json({
-        message: "Created user!",
-        data: { ...newUser, _id: result.insertedId.toString() },
+    try {
+      const user = await prisma.user.create({ data: newUser });
+      res.status(201).json({
+        message: 'Created user!',
+        data: user,
       });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          return res
+            .status(422)
+            .json({ message: 'User is already registered.' });
+        }
+        return res.status(500).json({ message: error.message });
+      }
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  } else {
+    res.setHeader('Allow', 'POST');
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 };
 

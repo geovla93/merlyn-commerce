@@ -1,14 +1,15 @@
-import { NextPage, InferGetStaticPropsType } from "next";
-import Head from "next/head";
+import { NextPage, GetStaticProps } from 'next';
+import Head from 'next/head';
+import { Section } from '@prisma/client';
 
-import Directory from "../components/Directory/Directory";
+import Directory from '@/components/common/Directory';
+import prisma from '@/lib/prisma';
 
-import { connectToDatabase } from "../lib/db/mongodb";
-import { Section } from "../types/models";
+type Props = {
+  sections: Section[];
+};
 
-const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
-  sections,
-}) => {
+const HomePage: NextPage<Props> = ({ sections }) => {
   return (
     <>
       <Head>
@@ -28,16 +29,12 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   );
 };
 
-export const getStaticProps = async () => {
-  const { db } = await connectToDatabase();
-
-  const sections = await db.collection("sections").find({}).toArray();
-
-  const data = JSON.parse(JSON.stringify(sections)) as Section[];
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const sections = await prisma.section.findMany();
 
   return {
     props: {
-      sections: data,
+      sections: JSON.parse(JSON.stringify(sections)),
     },
   };
 };

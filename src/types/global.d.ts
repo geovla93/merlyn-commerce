@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
-import { MongoClient } from "mongodb";
+import { PrismaClient } from '@prisma/client';
 
 declare global {
   namespace NodeJS {
     interface Global {
-      _mongoClientPromise: Promise<MongoClient>;
+      prisma: PrismaClient;
     }
   }
 }

@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
-import Head from "next/head";
-import { getSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import SignUp from "../../components/SignUp/SignUp";
+import { useState, useEffect } from 'react';
+import Head from 'next/head';
+import { getSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+
+import SignUp from '@/features/authentication/components/SignUp';
 
 const SignUpPage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -11,7 +12,7 @@ const SignUpPage = () => {
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
-        router.replace("/");
+        router.replace('/');
       } else {
         setIsLoading(false);
       }

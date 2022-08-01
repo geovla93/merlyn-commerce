@@ -1,23 +1,23 @@
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { CheckCircleIcon } from "@heroicons/react/solid";
+import { useEffect } from 'react';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { CheckCircleIcon } from '@heroicons/react/solid';
 
-import CustomButton from "../../components/CustomButton/CustomButton";
-import { useEffect } from "react";
-import useCart from "../../hooks/useCart";
+import CustomButton from '@/components/ui/Button';
+import useCart from '@/features/cart/hooks/useCart';
 
 const SuccessPage = () => {
   const router = useRouter();
   const { clearCart } = useCart();
 
   useEffect(() => {
-    if (router.query.referrer && router.query.referrer === "stripe") {
+    if (router.query.referrer && router.query.referrer === 'stripe') {
       clearCart();
     }
   }, [clearCart, router.query]);
 
   const handleClick = () => {
-    router.replace("/orders");
+    router.replace('/orders');
   };
 
   return (
