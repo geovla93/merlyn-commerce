@@ -60,6 +60,7 @@ model User {
   emailVerified DateTime? @map("email_verified")
   accounts      Account[]
   sessions      Session[]
+  orders        Order[]
 
   @@map("users")
 }
@@ -89,6 +90,36 @@ model Section {
   size      String?
 
   @@map("sections")
+}
+
+model Order {
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+  userId         String      @map("user_id")
+  user           User        @relation(fields: [userId], references: [id])
+  items          OrderItem[]
+  amount         Float
+  shippingAmount Float?      @map("shipping_amount")
+  images         String[]
+  address        Address
+  phone          String?
+}
+
+type OrderItem {
+  id       String @map("_id") @db.ObjectId
+  name     String
+  price    Int
+  image    String
+  quantity Int
+}
+
+type Address {
+  street  String
+  city    String
+  zip     String
+  country String
+  state   String
 }
 
 enum Gender {

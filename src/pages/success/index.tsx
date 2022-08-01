@@ -39,7 +39,7 @@ const SuccessPage = () => {
           once your items has shipped. If you would like to check the status of
           your order(s) please press the link below.
         </p>
-        <CustomButton onClick={handleClick} style="mt-8">
+        <CustomButton onClick={handleClick} className="mt-8">
           Go to my orders
         </CustomButton>
       </div>
