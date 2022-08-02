@@ -39,3 +39,8 @@ export const getProductsByCategory = async (category: string) => {
   }
   return prisma.product.findMany({ where: { category } });
 };
+
+export const getProductBySlug = async (slug: string) => {
+  const item = await prisma.product.findUnique({ where: { slug } });
+  return item;
+};

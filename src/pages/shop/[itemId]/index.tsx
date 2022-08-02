@@ -4,6 +4,7 @@ import { Product } from '@prisma/client';
 
 import ItemPreview from '@/features/product/components/ItemPreview';
 import prisma from '@/lib/prisma';
+import { getProductBySlug } from '@/features/product/utils/api';
 
 type Props = {
   item: Product;
@@ -43,7 +44,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const itemId = params.itemId as string;
 
   try {
-    const item = await prisma.product.findUnique({ where: { slug: itemId } });
+    const item = await getProductBySlug(itemId);
     return {
       props: {
         item: JSON.parse(JSON.stringify(item)),

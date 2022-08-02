@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import Image from 'next/image';
 import { Product } from '@prisma/client';
+import { StarIcon } from '@heroicons/react/solid';
 
 import Button from '@/components/ui/Button';
 import useCart from '@/features/cart/hooks/useCart';
@@ -10,67 +11,46 @@ type Props = {
 };
 
 const ItemPreview: FC<Props> = ({ item }) => {
-  const { id, name, image, price } = item;
+  const { id, name, image, price, slug } = item;
   const { addItemToCart } = useCart();
 
   const handleAddItem = () =>
-    addItemToCart({ id, name, image, price, quantity: 1 });
+    addItemToCart({ id, name, image, price, slug, quantity: 1 });
 
   return (
-    <div className="my-16 flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-10">
-      <div className="relative w-full flex-1">
+    <div className="my-16 grid gap-6 text-left lg:grid-cols-2">
+      <div className="relative aspect-[3/4] h-auto w-full rounded-lg">
         <Image
           src={image}
           alt={name}
-          width={290}
-          height={350}
+          layout="fill"
+          objectFit="cover"
+          objectPosition="center"
           quality={100}
-          layout="responsive"
-          objectFit="contain"
-          objectPosition="top"
+          className="rounded-lg"
         />
       </div>
-      <div className="flex flex-1 flex-col space-y-8 text-left">
-        <h1 className="text-2xl md:text-3xl">{name}</h1>
-        <h3 className="text-xl md:text-2xl">${price}</h3>
-        <p className="text-lg md:text-xl">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut
-          porta orci, ac eleifend magna. Curabitur eu nibh in nisl aliquam
-          interdum eu in urna. Praesent dignissim libero urna, non finibus neque
-          iaculis eget. Pellentesque turpis neque, aliquet ut pretium sit amet,
-          pulvinar sed magna. Donec finibus risus libero, ut lacinia tellus
-          euismod nec. Cras euismod tortor et urna ultrices, nec pellentesque
-          nulla posuere. Quisque vel neque vel ligula lacinia pretium. Donec
-          elementum ipsum ipsum, a luctus dolor euismod sed. Sed placerat libero
-          lobortis urna consectetur euismod. Phasellus at semper augue. Nam nec
-          aliquam ex. Aenean sit amet gravida quam. Donec semper molestie
-          pulvinar. In hac habitasse platea dictumst. Nulla vitae molestie
-          lorem.
-        </p>
-        <div className="flex w-4/5 justify-between space-x-8">
-          <div className="flex flex-1 space-x-4">
-            {/* <label htmlFor="size">Size</label> */}
-            <select
-              className="p-4"
-              name="size"
-              id="size"
-              defaultValue="Size"
-              defaultChecked
-            >
-              <option value="Size" disabled>
-                Size
-              </option>
-              <option value="xs">XS</option>
-              <option value="s">S</option>
-              <option value="m">M</option>
-              <option value="l">L</option>
-              <option value="xl">XL</option>
-            </select>
-          </div>
-          <Button type="button" onClick={handleAddItem}>
-            ADD TO CART
-          </Button>
+      <div className="flex flex-col space-y-2">
+        <h1 className="text-3xl font-bold">{name}</h1>
+        <h4 className="text-xl">${price}</h4>
+        <div className="flex items-center pb-3">
+          <StarIcon className="h-5 w-5 text-indigo-600" />
+          <StarIcon className="h-5 w-5 text-indigo-600" />
+          <StarIcon className="h-5 w-5 text-indigo-600" />
+          <StarIcon className="h-5 w-5 text-indigo-600" />
+          <StarIcon className="h-5 w-5 text-gray-400" />
+          <p className="ml-3">117 reviews</p>
         </div>
+        <Button onClick={handleAddItem}>Add to bag</Button>
+        <p className="pt-4">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+          culpa qui officia deserunt mollit anim id est laborum.
+        </p>
       </div>
     </div>
   );

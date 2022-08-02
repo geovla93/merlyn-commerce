@@ -112,6 +112,7 @@ type OrderItem {
   price    Int
   image    String
   quantity Int
+  slug     String
 }
 
 type Address {

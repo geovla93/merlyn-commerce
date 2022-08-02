@@ -4,4 +4,5 @@ export interface CartItem {
   price: number;
   name: string;
   quantity: number;
+  slug: string;
 }
