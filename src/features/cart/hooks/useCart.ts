@@ -15,8 +15,6 @@ const useCart = () => {
   const totalAmount = useRecoilValue(totalAmountSelector);
   const resetCartItems = useResetRecoilState(cartItemsState);
 
-  console.log({ cartItems, totalQuantity, totalAmount });
-
   const addItemToCart = (itemToAdd: CartItem) => {
     const existingItem = cartItems.find((item) => item.id === itemToAdd.id);
 

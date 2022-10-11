@@ -11,6 +11,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const authSession = await getSession({ req });
+
   const { items }: { items: CartItem[] } = req.body;
 
   const transformedItems = items.map((item) => {
@@ -37,8 +38,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       cancel_url: `${process.env.HOST}/checkout`,
       metadata: {
         customer: JSON.stringify({
-          email: authSession.user.email,
-          name: authSession.user.name,
+          email: authSession?.user?.email ?? '',
+          name: authSession?.user?.name ?? '',
         }),
         images: JSON.stringify(items.map((item) => item.image)),
         items: JSON.stringify(items),
@@ -52,6 +53,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(200).json({ id: session.id });
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: 'Something went wrong.' });
   }
 };
 

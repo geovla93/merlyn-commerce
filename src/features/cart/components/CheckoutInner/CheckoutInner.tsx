@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
-import { useSession } from 'next-auth/react';
 
 import CheckoutItem from '../CheckoutItem';
 import Button from '@/components/ui/Button';
@@ -13,7 +12,6 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 const CheckoutInner: FC = () => {
   const isMounted = useIsMounted();
-  const { data: session } = useSession();
   const { cartItems, totalAmount } = useCart();
   const taxAmount = isMounted ? totalAmount * 0.76 : 0;
   const shippingPrice = isMounted ? (totalAmount >= 50 ? 0 : 10) : 0;
@@ -27,7 +25,6 @@ const CheckoutInner: FC = () => {
       method: 'POST',
       body: JSON.stringify({
         items: cartItems,
-        email: session ? session.user.email : '',
       }),
       headers: {
         'Content-Type': 'application/json',
